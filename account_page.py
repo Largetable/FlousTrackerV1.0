@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import E,W,S,N
 from tkinter import ttk
-
+import datetime
+from db_check import Account_db
 class Account(tk.Frame):
 	def __init__(self, parent, attr):
 		tk.Frame.__init__(self, parent)
@@ -10,7 +11,10 @@ class Account(tk.Frame):
 		self.config(bg='#aaf7f7')
 		#main_frame=tk.Frame(self, width=900, height=500, bg='red')
 		#main_frame.place(x=0,y=0)
-
+		today=datetime.datetime.today().strftime('%d%m%y')
+		last_add_time=''
+		self.today=today
+		self.last_add_time=last_add_time
 		##################
 		frame1=tk.Frame(self, width=450, height=500, bg='black')
 		frame2=tk.Frame(self, width=450, height=500, bg='blue')
@@ -51,36 +55,44 @@ class Account(tk.Frame):
 		add_cash_button.grid(row=2,column=0, sticky=E, pady=5)
 		####################### ADD_EXPENSE_FRAME
 		categories=["Food", "Transport", "Education", "Phone/Internet bill", "Clothes",
-						"Entertainment/Sport", "Gifts", "Going out", "Other.." ]
+						"Entertainment/Sport", "Gifts", "Going out", "Other" ]
 
 		variable=tk.StringVar(self)
 		variable.set(categories[0])
 
 		add_expense_label=tk.Label(add_expense_frame, text="Add expense here!", font=("Courier",13), bg="red")
-		category_option_menu=tk.OptionMenu(add_expense_frame, variable, *categories)
-		expense_value_entry=tk.Entry(add_expense_frame, width="13")
-		description_text=tk.Text(add_expense_frame, width=20, height=10, font=("Courier",12))
-		description_text.insert(tk.INSERT, "Please insert a brief description here..")
-		add_expense_button=tk.Button(add_expense_frame, text="Add expense!")
+		category_option_menu=ttk.OptionMenu(add_expense_frame, variable, *categories)
+		expense_value_entry=ttk.Entry(add_expense_frame, width="13")
+		expense_description=tk.Text(add_expense_frame, width=20, height=10, font=("Courier",12))
+		expense_description.insert(tk.INSERT, "Please insert a brief description here..")
+		add_expense_button=ttk.Button(add_expense_frame, text="Add expense!", 
+		 command = lambda : self.expense_add(expense_value_entry.get(),
+		  variable.get(), expense_description.get("1.0",'end-1c'), datetime.datetime.today().strftime('%d%m%y')))
 
 		add_expense_label.grid(row=0, column=0, sticky=E, padx=50, pady=20)
-		category_option_menu.grid(row=1, column=0, padx=10, pady=5, sticky=W)
+		category_option_menu.grid(row=1, column=0, padx=30, pady=5, sticky=W)
 		expense_value_entry.grid(row=1, column=0, padx=10, pady=5, sticky=E)
-		description_text.grid(row=2, column=0, padx=20, pady=20)
+		expense_description.grid(row=2, column=0, padx=20, pady=20)
 		add_expense_button.grid(row=3,pady=5)
 
+		############################ LAST TIME ADDED EXPENSE FRAME
+		'''last_expense_label=tk.Label(last_login_frame)
+		last_expenses_total=tk.Label(last_login_frame, text="Expenses in total : ")  #ADD METHOD TO GET TOTAL LAST EXPENSES
+		last_expenses_detailed_label=tk.Label(last_login_frame, text="Expenses in details..")
+		food_label=tk.Label(last_login_frame, text= "Food : ")
+		food_label=tk.Label(last_login_frame, text= "Food : ")
+		food_label=tk.Label(last_login_frame, text= "Food : ")
+		food_label=tk.Label(last_login_frame, text= "Food : ")
+		food_label=tk.Label(last_login_frame, text= "Food : ")
+		food_label=tk.Label(last_login_frame, text= "Food : ")
+		food_label=tk.Label(last_login_frame, text= "Food : ")
+		food_label=tk.Label(last_login_frame, text= "Food : ")
+		food_label=tk.Label(last_login_frame, text= "Food : ")'''
 
-		'''col_count, row_count = self.grid_size()
-		for col in range(col_count):
-			self.grid_columnconfigure(col, minsize=20)
-		for row in range(row_count):
-			self.grid_rowconfigure(row, minsize=20)'''
+	def expense_add(self, expense_value, expense_category, expense_description, expense_date):
+		expense=Account_db(self.attr)
+		num=expense.total_number_expen()
+		expense.add_expense(expense_value, expense_category, expense_description, expense_date+str(num))
 
-
-
-
-		#expense_add_frame.grid(row=4)
-		#expense_add_frame.grid(row=3, column=0)
-
-		#add_expense_label.pack()
-		#test.grid(row=2, column=0)
+		tk.messagebox.showinfo("Success!", "Expense added successfully with value of {}DT".format(expense_value))
+		print("expense added window")

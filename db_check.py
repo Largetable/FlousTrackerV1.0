@@ -86,9 +86,45 @@ class Account_db:
 			EXPENSE_ID TEXT PRIMARY KEY ,
 			EXPENSE_VALUE TEXT NOT NULL ,
 			EXPENSE_CATEGORY TEXT NOT NULL ,
-			EXPENSE_DATE TEXT NOT NULL
+			EXPENSE_DATE TEXT NOT NULL,
+			EXPENSE_DESCRIPTION TEXT
 			);''')
 		print("Expenses table created successfully")
 		conn.commit()
 		conn.close()
 		print("Database closed successfully")
+
+	#def add_column_users(self):
+	def add_expense(self, value, category, description, date):
+		print("Adding an expense..")
+		conn=sqlite3.connect('money_tracker.db')
+		print("Database opened successfully")
+		c=conn.cursor()
+		categories_numbers={"Food":'1', "Transport":'2', "Education":'3', "Phone/Internet bill":'4', "Clothes":'5', "Entertainment/Sport":'6', \
+ 			"Gifts":'7', "Going out":'8', "Other":'9'}
+
+		print('category nummber ={}'.format(categories_numbers[category]))
+		print("ID = {}".format(categories_numbers[category]+date[:6]))
+		c.execute("""INSERT INTO expenses VALUES (:EXPENSE_ID, :EXPENSE_VALUE, :EXPENSE_CATEGORY,
+			:EXPENSE_DATE, :EXPENSE_DESCRIPTION)""",{'EXPENSE_ID':(categories_numbers[category]+date), 'EXPENSE_VALUE':value, \
+				'EXPENSE_CATEGORY':category, 'EXPENSE_DATE':date[:6], 'EXPENSE_DESCRIPTION':description})
+		print("Expense added successfully")
+		conn.commit()
+		conn.close()
+		print("Database closed successfully")
+	def add_expense_desc(self):
+		print("ADDING EXPENSES DESCIRPTION")
+		conn=sqlite3.connect('money_tracker.db')
+		c=conn.cursor()
+		c.execute("ALTER TABLE expenses ADD COLUMN EXPENSE_DESCRIPTION TEXT ")
+		print("COLUMN ADDDDED")
+		conn.commit()
+		conn.close()
+	def total_number_expen(self):
+		print("Calculating total number of expenses:")
+		conn=sqlite3.connect('money_tracker.db')
+		c=conn.cursor()
+		c.execute("SELECT * FROM expenses")
+		n=len(c.fetchall())
+		print("TOTAL NUMBER OF EXPENSE = {}".format(n))
+		return n
