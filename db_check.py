@@ -122,9 +122,8 @@ class Account_db:
 			conn.close()
 			tk.messagebox.showinfo("Success!", "Expense added successfully!")
 			print("Database closed successfully")
-
-
-
+			self.parent.refresh_page()
+			
 	def add_expense_desc(self):
 		print("ADDING EXPENSES DESCIRPTION")
 		conn=sqlite3.connect('money_tracker.db')
@@ -133,6 +132,7 @@ class Account_db:
 		print("COLUMN ADDDDED")
 		conn.commit()
 		conn.close()
+
 	def total_number_expen(self):
 		print("Calculating total number of expenses:")
 		conn=sqlite3.connect('money_tracker.db')
@@ -168,7 +168,7 @@ class Account_db:
 			print("cash reset.")
 			conn.close()
 		self.parent.refresh_page()
-		#self.parent.parent.switch_frame(Account, self.username)
+
 	def add_cash(self, value):
 		print("Adding cash value!")
 		if (len(value)==0):
@@ -180,6 +180,7 @@ class Account_db:
 			conn.commit()
 			tk.messagebox.showinfo("Success!", "{} DT has been added to your account.".format(value))
 			print("Value added.")
+			#self.username_get.delete(0,'end')
 			#self.parent.parent.switch_frame(self.parent, self.username)
 			conn.close()
 		self.parent.refresh_page()

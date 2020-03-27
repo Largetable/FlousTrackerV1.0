@@ -26,7 +26,7 @@ class Account(tk.Frame):
 		self.grid_columnconfigure(1, weight=1)
 		frame1.grid(row=0, column=0, sticky=N+S+W+E)
 		frame2.grid(row=0, column=1, sticky=N+S+W+E)
-#		######################### FRAME 1
+		######################### FRAME 1
 
 		last_login_frame=tk.Frame(frame1, width=350, height=300,bg='white')
 		welcome_label=tk.Label(frame1, text='Welcome {} ! '.format(attr), font=("Courier", 18), fg='blue')
@@ -73,6 +73,7 @@ class Account(tk.Frame):
 		add_expense_label=tk.Label(add_expense_frame, text="Add expense here!", font=("Courier",13), bg="red")
 		category_option_menu=ttk.OptionMenu(add_expense_frame, variable, categories[0], *categories)  #categories[0] is required in ttk because it will show the default option
 		expense_value_entry=ttk.Entry(add_expense_frame, width="13")
+		self.expense_value_entry=expense_value_entry
 		expense_description=tk.Text(add_expense_frame, width=20, height=10, font=("Courier",12))
 		expense_description.insert(tk.INSERT, "Please insert a brief description here..")
 

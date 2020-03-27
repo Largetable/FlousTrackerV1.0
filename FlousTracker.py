@@ -1,11 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-
 from db_check import Registering, Logging
 from home_page import HomePage
 from account_page import Account
-
 
 green='#229954'
 blue='#2980b9'
