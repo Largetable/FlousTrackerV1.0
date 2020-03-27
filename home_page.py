@@ -20,9 +20,6 @@ class HomePage(tk.Frame):
 		tk.Frame.__init__(self, parent)
 		self.parent=parent
 
-		#label = tk.Label(self, text = "Welcome to Money Tracker V2.0 , choose one of the options below", font = LARGE_FONT)
-		#label.grid(row=0,column=1)
-		
 		#DECLARATION OF BOTH FRAMES FOR LOGIN AND REGISTRATION
 		register_frame = tk.Frame(self,  bg= '#f7f3aa' , width=450, height=500)
 		register_frame.grid(row=0, column=0)

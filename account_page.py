@@ -9,14 +9,16 @@ class Account(tk.Frame):
 		self.parent=parent
 		self.attr=attr
 		self.config(bg='#aaf7f7')
-		session=Account_db(attr)
+		#####IMPORTANT LINEEE 
+		session=Account_db(self, attr)
 
-		#main_frame=tk.Frame(self, width=900, height=500, bg='red')
-		#main_frame.place(x=0,y=0)
-		today=datetime.datetime.today().strftime('%d%m%y')
+
+		########################
+
+		'''today=datetime.datetime.today().strftime('%d%m%y')
 		last_add_time=''
 		self.today=today
-		self.last_add_time=last_add_time
+		self.last_add_time=last_add_time'''
 		##################
 		frame1=tk.Frame(self, width=450, height=500, bg='#aaf7f7')
 		frame2=tk.Frame(self, width=450, height=500, bg='#aaf7f7')
@@ -32,11 +34,8 @@ class Account(tk.Frame):
 		#cash_value_label=tk.Label(frame1, text= "CASHDT",bg='green', font=("Courier",18))
 
 		expense_add_frame=tk.Frame(frame2, width = 400, height= 300, bg='white' )
-		test=tk.Label(self, text="TEST")
-		#self.grid_columnconfigure(0, weight=1)
-		#self.grid_columnconfigure(1, weight=1)
-		#self.grid_columnconfigure(2, weight=1)
-		#self.grid_rowconfigure(1, weight=2)'
+
+
 		welcome_label.pack(pady=20)
 		estim_cash_label.pack(pady=10)
 		last_login_frame.pack(pady=30)
@@ -72,12 +71,13 @@ class Account(tk.Frame):
 		variable.set(categories[0])
 
 		add_expense_label=tk.Label(add_expense_frame, text="Add expense here!", font=("Courier",13), bg="red")
-		category_option_menu=ttk.OptionMenu(add_expense_frame, variable, *categories)
+		category_option_menu=ttk.OptionMenu(add_expense_frame, variable, categories[0], *categories)  #categories[0] is required in ttk because it will show the default option
 		expense_value_entry=ttk.Entry(add_expense_frame, width="13")
 		expense_description=tk.Text(add_expense_frame, width=20, height=10, font=("Courier",12))
 		expense_description.insert(tk.INSERT, "Please insert a brief description here..")
+
 		add_expense_button=ttk.Button(add_expense_frame, text="Add expense!", 
-		 command = lambda : self.expense_add(expense_value_entry.get(),
+		 command = lambda : session.add_expense(expense_value_entry.get(),
 		  variable.get(), expense_description.get("1.0",'end-1c'), datetime.datetime.today().strftime('%d%m%y')))
 
 		add_expense_label.grid(row=0, column=0, sticky=E, padx=50, pady=20)
@@ -86,11 +86,15 @@ class Account(tk.Frame):
 		expense_description.grid(row=2, column=0, padx=20, pady=20)
 		add_expense_button.grid(row=3,pady=5)
 
+	def refresh_page(self):
+		self.destroy()
+		self.parent.switch_frame(Account, self.attr)
+
 		############################ LAST TIME ADDED EXPENSE FRAME
 		'''last_expense_label=tk.Label(last_login_frame)
 		last_expenses_total=tk.Label(last_login_frame, text="Expenses in total : ")  #ADD METHOD TO GET TOTAL LAST EXPENSES
 		last_expenses_detailed_label=tk.Label(last_login_frame, text="Expenses in details..")'''
-	def expense_add(self, expense_value, expense_category, expense_description, expense_date):
+	'''def expense_add(self, expense_value, expense_category, expense_description, expense_date):
 		if (len(expense_value)==0):
 			tk.messagebox.showerror("Error!", "Please fill in with an expense value first.")
 		else:
@@ -100,3 +104,5 @@ class Account(tk.Frame):
 
 			tk.messagebox.showinfo("Success!", "Expense added successfully with value of {}DT".format(expense_value))
 			print("expense added window")
+			#self.destroy()
+			#self.parent.switch_frame(Account, self.attr)'''

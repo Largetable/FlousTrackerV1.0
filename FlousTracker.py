@@ -16,7 +16,7 @@ orange='#dc7633'
 gray='#85929e'
 azra9_feta7='		'
 LARGE_FONT = ("Verdana", 10)
-
+	
 class FlousTracker(tk.Tk):	
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)

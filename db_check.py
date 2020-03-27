@@ -73,8 +73,9 @@ class Logging:
 		return aux==self.password
 
 class Account_db:
-	def __init__(self, username):
+	def __init__(self, parent,  username):
 		self.username=username
+		self.parent=parent
 	def create_expense_table(self):
 		print("Creating Expense table..")
 		conn = sqlite3.connect('money_tracker.db')
@@ -95,25 +96,35 @@ class Account_db:
 
 	#def add_column_users(self):
 	def add_expense(self, value, category, description, date):
-		print("Adding an expense..")
-		conn=sqlite3.connect('money_tracker.db')
-		print("Database opened successfully")
-		c=conn.cursor()
-		categories_numbers={"Food":'1', "Transport":'2', "Education":'3', "Phone/Internet bill":'4', "Clothes":'5', "Entertainment/Sport":'6', \
- 			"Gifts":'7', "Going out":'8', "Other":'9'}
+		if (len(value)==0):
+			tk.messagebox.showerror("Error", "Please fill in with an expense value first.")
+		else:
+			print("Adding an expense..")
+			conn=sqlite3.connect('money_tracker.db')
+			print("Database opened successfully")
 
-		print('category nummber ={}'.format(categories_numbers[category]))
-		print("ID = {}".format(categories_numbers[category]+date[:6]))
+			c=conn.cursor()
+			categories_numbers={"Food":'1', "Transport":'2', "Education":'3', "Phone/Internet bill":'4', "Clothes":'5', "Entertainment/Sport":'6', \
+	 			"Gifts":'7', "Going out":'8', "Other":'9'}
+			num=self.total_number_expen()
+			expense_id_v2=categories_numbers[category]+date+str(num)
 
-		expense_id_v2=categories_numbers[category]+date
-		c.execute("""INSERT INTO expenses VALUES (:EXPENSE_ID, :EXPENSE_VALUE, :EXPENSE_CATEGORY,
-			:EXPENSE_DATE, :EXPENSE_DESCRIPTION)""",{'EXPENSE_ID':(expense_id_v2), 'EXPENSE_VALUE':value, \
-				'EXPENSE_CATEGORY':category, 'EXPENSE_DATE':date[:6], 'EXPENSE_DESCRIPTION':description})
-		c.execute("INSERT INTO users_expenses VALUES (:user_id, :EXPENSE_ID)", {'user_id':(self.username), 'EXPENSE_ID':(expense_id_v2)})
-		print("Expense added successfully")
-		conn.commit()
-		conn.close()
-		print("Database closed successfully")
+			print('category nummber ={}'.format(categories_numbers[category]))
+			print("ID = {}".format(categories_numbers[category]+date+str(num)))
+
+
+			c.execute("""INSERT INTO expenses VALUES (:EXPENSE_ID, :EXPENSE_VALUE, :EXPENSE_CATEGORY,
+				:EXPENSE_DATE, :EXPENSE_DESCRIPTION)""",{'EXPENSE_ID':(expense_id_v2), 'EXPENSE_VALUE':value, \
+					'EXPENSE_CATEGORY':category, 'EXPENSE_DATE':date, 'EXPENSE_DESCRIPTION':description})
+			c.execute("INSERT INTO users_expenses VALUES (:user_id, :EXPENSE_ID)", {'user_id':(self.username), 'EXPENSE_ID':(expense_id_v2)})
+			print("Expense added successfully")
+			conn.commit()
+			conn.close()
+			tk.messagebox.showinfo("Success!", "Expense added successfully!")
+			print("Database closed successfully")
+
+
+
 	def add_expense_desc(self):
 		print("ADDING EXPENSES DESCIRPTION")
 		conn=sqlite3.connect('money_tracker.db')
@@ -156,6 +167,7 @@ class Account_db:
 			tk.messagebox.showinfo("Success!", "Your cash has been reset successfully!")
 			print("cash reset.")
 			conn.close()
+		self.parent.refresh_page()
 		#self.parent.parent.switch_frame(Account, self.username)
 	def add_cash(self, value):
 		print("Adding cash value!")
@@ -168,4 +180,7 @@ class Account_db:
 			conn.commit()
 			tk.messagebox.showinfo("Success!", "{} DT has been added to your account.".format(value))
 			print("Value added.")
+			#self.parent.parent.switch_frame(self.parent, self.username)
 			conn.close()
+		self.parent.refresh_page()
+
