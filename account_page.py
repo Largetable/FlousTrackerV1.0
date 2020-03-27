@@ -18,8 +18,8 @@ class Account(tk.Frame):
 		self.today=today
 		self.last_add_time=last_add_time
 		##################
-		frame1=tk.Frame(self, width=450, height=500, bg='black')
-		frame2=tk.Frame(self, width=450, height=500, bg='blue')
+		frame1=tk.Frame(self, width=450, height=500, bg='#aaf7f7')
+		frame2=tk.Frame(self, width=450, height=500, bg='#aaf7f7')
 		self.grid_columnconfigure(0, weight=1)
 		self.grid_columnconfigure(1, weight=1)
 		frame1.grid(row=0, column=0, sticky=N+S+W+E)
@@ -41,21 +41,30 @@ class Account(tk.Frame):
 		estim_cash_label.pack(pady=10)
 		last_login_frame.pack(pady=30)
 		######################## FRAME 2
-		add_cash_frame=tk.Frame(frame2, width=300, height=100, bg='white' )
+		cash_frame=tk.Frame(frame2, width=300, height=100, bg='white' )
 		add_expense_frame=tk.Frame(frame2, width=400, height= 300, bg='white')
 
-		add_cash_frame.pack(pady=20)
+		cash_frame.pack(pady=20)
 		add_expense_frame.pack(pady=10)
-		####################### ADD_CASH_FRAME
-		add_cash_label=tk.Label(add_cash_frame, text="Add your cash here:", font=("Courier",15))
-		add_cash_entry=ttk.Entry(add_cash_frame)
-		add_cash_button=ttk.Button(add_cash_frame, text="Add cash!", command = lambda : session.add_cash(add_cash_entry.get()))
+		####################### cash_frame
+		add_cash_label=tk.Label(cash_frame, text="Add your cash:", font=("Courier",15))
+		add_cash_entry=ttk.Entry(cash_frame)
+		add_cash_button=ttk.Button(cash_frame, text="Add cash!", command = lambda : session.add_cash(add_cash_entry.get()))
 
+		reset_cash_label=tk.Label(cash_frame, text="Reset your cash:", font=("Courier",15))
+		reset_cash_entry=ttk.Entry(cash_frame)
+		reset_cash_button=ttk.Button(cash_frame, text="Reset cash!", command = lambda : session.reset_cash(reset_cash_entry.get()))
 
-		add_cash_label.grid(row=0, column=0, rowspan=2, padx=5, pady=5)
-		add_cash_entry.grid(row=0, column=1, rowspan=2, padx=5, pady=5)
-		add_cash_button.grid(row=2,column=0, sticky=E, pady=5)
+		add_cash_label.grid(row=0, column=0, rowspan=2,  padx=5, pady=5)
+		add_cash_entry.grid(row=0, column=1,rowspan=2, padx=5, pady=5)
+		add_cash_button.grid(row=0,column=2, rowspan=2,sticky=E, pady=5)
+
+		reset_cash_label.grid(row=2, column=0, rowspan=2, padx=5, pady=5)
+		reset_cash_entry.grid(row=2, column=1, rowspan=2, padx=5, pady=5)
+		reset_cash_button.grid(row=2,column=2,rowspan=2,sticky=E, pady=5)
 		####################### ADD_EXPENSE_FRAME
+
+
 		categories=["Food", "Transport", "Education", "Phone/Internet bill", "Clothes",
 						"Entertainment/Sport", "Gifts", "Going out", "Other" ]
 
@@ -82,9 +91,12 @@ class Account(tk.Frame):
 		last_expenses_total=tk.Label(last_login_frame, text="Expenses in total : ")  #ADD METHOD TO GET TOTAL LAST EXPENSES
 		last_expenses_detailed_label=tk.Label(last_login_frame, text="Expenses in details..")'''
 	def expense_add(self, expense_value, expense_category, expense_description, expense_date):
-		expense=Account_db(self.attr)
-		num=expense.total_number_expen()
-		expense.add_expense(expense_value, expense_category, expense_description, expense_date+str(num))
+		if (len(expense_value)==0):
+			tk.messagebox.showerror("Error!", "Please fill in with an expense value first.")
+		else:
+			expense=Account_db(self.attr)
+			num=expense.total_number_expen()
+			expense.add_expense(expense_value, expense_category, expense_description, expense_date+str(num))
 
-		tk.messagebox.showinfo("Success!", "Expense added successfully with value of {}DT".format(expense_value))
-		print("expense added window")
+			tk.messagebox.showinfo("Success!", "Expense added successfully with value of {}DT".format(expense_value))
+			print("expense added window")

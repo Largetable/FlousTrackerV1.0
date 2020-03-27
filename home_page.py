@@ -124,8 +124,8 @@ class HomePage(tk.Frame):
 		if (len(username)==0) or (len(password)==0):
 			messagebox.showerror("Error!!", "All empty spaces must be filled!")
 		else:
-			if (len(username)<8):
-				messagebox.showerror("Error", "Username must be atleast made from 8 caracters!")
+			if (len(username)<5):
+				messagebox.showerror("Error", "Username must be atleast made from 5 caracters!")
 			elif (len(password)<8):
 				messagebox.showerror("Error", "Password must be made from atleast 8 caracters!")
 			else:
