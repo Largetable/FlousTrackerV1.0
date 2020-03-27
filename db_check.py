@@ -11,8 +11,8 @@ class Registering:
 		c=conn.cursor()
 
 		c.execute('''CREATE TABLE users(
-			ID TEXT PRIMARY KEY ,
-			PASSWORD TEXT NOT NULL
+			user_id TEXT PRIMARY KEY ,
+			user_password TEXT NOT NULL
 			);''')
 		print("Table created successfully")
 		conn.commit()
@@ -24,7 +24,7 @@ class Registering:
 		print("Database opened successfully")
 		c=conn.cursor()
 		print("Checking if username taken or not .... ")
-		c.execute("SELECT ID FROM users WHERE ID = (?)" , (self.username,))
+		c.execute("SELECT user_id FROM users WHERE user_id = (?)" , (self.username,))
 		aux=c.fetchone()
 		conn.commit()
 		conn.close()
@@ -36,7 +36,7 @@ class Registering:
 		print("Database opened successfully")
 		c=conn.cursor()
 		print("Adding username and password to DB ....")
-		c.execute("INSERT INTO users VALUES (:id, :password)",{'id' :self.username , 'password' : self.password})
+		c.execute("INSERT INTO users VALUES (:user_id, :user_password, :user_cash)",{'user_id' :self.username , 'user_password' : self.password, 'user_cash' : 0.0})
 		print("Username and password added successfully.")
 		conn.commit()
 		conn.close()
@@ -53,7 +53,7 @@ class Logging:
 		print("Database opened successfully")
 		c=conn.cursor()
 		print("Checking if username exists or not .... ")
-		c.execute("SELECT ID FROM users WHERE ID = (?)" , (self.username,))
+		c.execute("SELECT user_id FROM users WHERE user_id = (?)" , (self.username,))
 		aux=c.fetchone()
 		conn.commit()
 		conn.close()
@@ -65,8 +65,8 @@ class Logging:
 		print("Database opened successfully")
 		c=conn.cursor()
 		print("Verifying if password is correct or not....")
-		c.execute("SELECT PASSWORD FROM users WHERE ID = (?)", (self.username,))
-		aux=c.fetchone()[0]
+		c.execute("SELECT user_password FROM users WHERE user_id = (?)", (self.username,))
+		aux=c.fetchone()[0]    #USED [0] because fetchone returs a tuple (password,)
 		conn.commit()
 		conn.close()
 		print("Database closed succefully")
@@ -105,9 +105,12 @@ class Account_db:
 
 		print('category nummber ={}'.format(categories_numbers[category]))
 		print("ID = {}".format(categories_numbers[category]+date[:6]))
+
+		expense_id_v2=categories_numbers[category]+date
 		c.execute("""INSERT INTO expenses VALUES (:EXPENSE_ID, :EXPENSE_VALUE, :EXPENSE_CATEGORY,
-			:EXPENSE_DATE, :EXPENSE_DESCRIPTION)""",{'EXPENSE_ID':(categories_numbers[category]+date), 'EXPENSE_VALUE':value, \
+			:EXPENSE_DATE, :EXPENSE_DESCRIPTION)""",{'EXPENSE_ID':(expense_id_v2), 'EXPENSE_VALUE':value, \
 				'EXPENSE_CATEGORY':category, 'EXPENSE_DATE':date[:6], 'EXPENSE_DESCRIPTION':description})
+		c.execute("INSERT INTO users_expenses VALUES (:user_id, :expense_id)", {'user_id':(self.username), 'EXPENSE_ID':(expense_id_v2)})
 		print("Expense added successfully")
 		conn.commit()
 		conn.close()
@@ -127,4 +130,23 @@ class Account_db:
 		c.execute("SELECT * FROM expenses")
 		n=len(c.fetchall())
 		print("TOTAL NUMBER OF EXPENSE = {}".format(n))
+		conn.commit()
+		conn.close()
 		return n
+
+	def get_cash(self):
+		print("Getting cash's value for this user : {}".format(self.username))
+		conn=sqlite3.connect('money_tracker.db')
+		c=conn.cursor()
+		aux=c.execute("SELECT user_cash FROM users WHERE user_id=(?)", (self.username, ))
+		conn.commit()
+		conn.close()
+		return aux
+
+	def add_cash(self, value):
+		print("Adding cash value!")
+		conn=sqlite3.connect('money_tracker.db')
+		c=conn.cursor()
+		c.execute("UPDATE users SET user_cash = (?) WHERE user_id = (?)", (value, self.username))
+		conn.commit()
+		conn.close()

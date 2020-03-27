@@ -92,7 +92,7 @@ class HomePage(tk.Frame):
 		self.passlog_get=passlog_get
 		passlog_get.place(x=250, y=255)
 		#
-
+ 
 		login_button = ttk.Button(login_frame, text='Login', command = lambda : self.login_db(userlogin_get.get(), passlog_get.get())) # adding controller is importanth here
 		login_button.place(x=200, y=330)
 		########################END##############################
@@ -101,8 +101,8 @@ class HomePage(tk.Frame):
 		if (len(username)==0) or (len(password)==0) or (len(confirm_password)==0):
 			messagebox.showerror("Error!!", "All empty spaces must be filled!")
 		else:
-			if (len(username)<8):
-				messagebox.showerror("Error", "Username must be atleast made from 8 caracters!")
+			if (len(username)<5):
+				messagebox.showerror("Error", "Username must be atleast made from 5 caracters!")
 			elif (len(password)<8):
 				messagebox.showerror("Error", "Password must be made from atleast 8 caracters!")
 			elif (password!=confirm_password):
@@ -136,8 +136,5 @@ class HomePage(tk.Frame):
 					if (login_try.passverif()==False):
 						messagebox.showerror("Error", "Wrong password!")
 					else: 
-						#global user_var
-						#uservar = {'name' : username}
-						#acc = Account(username)
 						self.parent.switch_frame(Account, username)
 						messagebox.showinfo("Succes", "Login successful")

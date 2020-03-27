@@ -9,6 +9,8 @@ class Account(tk.Frame):
 		self.parent=parent
 		self.attr=attr
 		self.config(bg='#aaf7f7')
+		session=Account_db(attr)
+
 		#main_frame=tk.Frame(self, width=900, height=500, bg='red')
 		#main_frame.place(x=0,y=0)
 		today=datetime.datetime.today().strftime('%d%m%y')
@@ -26,7 +28,7 @@ class Account(tk.Frame):
 
 		last_login_frame=tk.Frame(frame1, width=350, height=300,bg='white')
 		welcome_label=tk.Label(frame1, text='Welcome {} ! '.format(attr), font=("Courier", 18), fg='blue')
-		estim_cash_label=tk.Label(frame1, text='Estimated cash: $$$$$', fg='green', font=("Courier",18))
+		estim_cash_label=tk.Label(frame1, text='Estimated cash: {}'.format(session.get_cash()), fg='green', font=("Courier",16))
 		#cash_value_label=tk.Label(frame1, text= "CASHDT",bg='green', font=("Courier",18))
 
 		expense_add_frame=tk.Frame(frame2, width = 400, height= 300, bg='white' )
@@ -47,7 +49,7 @@ class Account(tk.Frame):
 		####################### ADD_CASH_FRAME
 		add_cash_label=tk.Label(add_cash_frame, text="Add your cash here:", font=("Courier",15))
 		add_cash_entry=ttk.Entry(add_cash_frame)
-		add_cash_button=ttk.Button(add_cash_frame, text="Add cash!")
+		add_cash_button=ttk.Button(add_cash_frame, text="Add cash!", command = lambda : session.add_cash(add_cash_entry.get()))
 
 
 		add_cash_label.grid(row=0, column=0, rowspan=2, padx=5, pady=5)
@@ -78,17 +80,7 @@ class Account(tk.Frame):
 		############################ LAST TIME ADDED EXPENSE FRAME
 		'''last_expense_label=tk.Label(last_login_frame)
 		last_expenses_total=tk.Label(last_login_frame, text="Expenses in total : ")  #ADD METHOD TO GET TOTAL LAST EXPENSES
-		last_expenses_detailed_label=tk.Label(last_login_frame, text="Expenses in details..")
-		food_label=tk.Label(last_login_frame, text= "Food : ")
-		food_label=tk.Label(last_login_frame, text= "Food : ")
-		food_label=tk.Label(last_login_frame, text= "Food : ")
-		food_label=tk.Label(last_login_frame, text= "Food : ")
-		food_label=tk.Label(last_login_frame, text= "Food : ")
-		food_label=tk.Label(last_login_frame, text= "Food : ")
-		food_label=tk.Label(last_login_frame, text= "Food : ")
-		food_label=tk.Label(last_login_frame, text= "Food : ")
-		food_label=tk.Label(last_login_frame, text= "Food : ")'''
-
+		last_expenses_detailed_label=tk.Label(last_login_frame, text="Expenses in details..")'''
 	def expense_add(self, expense_value, expense_category, expense_description, expense_date):
 		expense=Account_db(self.attr)
 		num=expense.total_number_expen()
