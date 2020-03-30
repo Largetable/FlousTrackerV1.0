@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import E,W,S,N
 from tkinter import ttk
 import datetime
+import sys
 from db_check import Account_db
 class Account(tk.Frame):
 	def __init__(self, parent, attr):
@@ -11,8 +12,11 @@ class Account(tk.Frame):
 		self.config(bg='#aaf7f7')
 		#####IMPORTANT LINEEE 
 		session=Account_db(self, attr)
+		session.create_expense_table()
+		session.create_users_expenses_table()
+		#session.create_session_table()
 
-
+		#print(session.get_last_categories_values())
 		########################
 
 		'''today=datetime.datetime.today().strftime('%d%m%y')
@@ -26,6 +30,7 @@ class Account(tk.Frame):
 		self.grid_columnconfigure(1, weight=1)
 		frame1.grid(row=0, column=0, sticky=N+S+W+E)
 		frame2.grid(row=0, column=1, sticky=N+S+W+E)
+		ttk.Button(self, text="Quit", command = lambda : session.save_last_login_date()).place(x=380, y=460)
 		######################### FRAME 1
 
 		last_login_frame=tk.Frame(frame1, width=350, height=300,bg='white')
@@ -65,7 +70,7 @@ class Account(tk.Frame):
 
 
 		categories=["Food", "Transport", "Education", "Phone/Internet bill", "Clothes",
-						"Entertainment/Sport", "Gifts", "Going out", "Other" ]
+						"Entertainment/Sport", "Gifts", "Going out", "Coffee shop", "Other" ]
 
 		variable=tk.StringVar(self)
 		variable.set(categories[0])
@@ -87,23 +92,29 @@ class Account(tk.Frame):
 		expense_description.grid(row=2, column=0, padx=20, pady=20)
 		add_expense_button.grid(row=3,pady=5)
 
+		########################### LAST TIME ADDED EXPENSE FRAME
+		last_expense_label=tk.Label(last_login_frame, text="Informations about your last session!", font=("Courier",13))
+		last_expense_label.grid(row=0, column=0, sticky=E, padx=50, pady=20)
+		if (session.get_last_login_date() == 'NULL'):
+			tk.Label(last_login_frame, text= """There is currently no informations to display.. \n please fill in with data first 
+				then re-login """, font=("Courier",13)).grid(row=1, sticky=S)
+
+		else:
+			print("INSIDE ELSE NOW")
+			categories_values=session.get_last_categories_values()
+			last_expenses_total=tk.Label(last_login_frame, text="Total expenses: 555", font=("Courier",12))  #ADD METHOD TO GET TOTAL LAST EXPENSES
+			last_expenses_total.grid(row=1, padx=30, pady=5 )
+			last_expenses_detailed_label=tk.Label(last_login_frame, text="Expenses in details..", font=("Courier",15))
+			last_expenses_detailed_label.grid(row=2, pady=5)
+			categories=list(categories_values.keys())
+			print("Categories = {}".format(categories))
+			values=list(categories_values.values())
+			print("values = {}".format(values))
+			for i in range(len(categories_values)):
+				tk.Label(last_login_frame, text=categories[i], font=("Courier",13)).grid(row=3+i, column=0, padx=30, pady=5, sticky=W, )
+				tk.Label(last_login_frame, text=values[i], font=("Courier",13)).grid(row=3+i, column=0, pady=5, padx=20)
+			last_login_frame.grid_columnconfigure(1, weight=2)
+
 	def refresh_page(self):
 		self.destroy()
 		self.parent.switch_frame(Account, self.attr)
-
-		############################ LAST TIME ADDED EXPENSE FRAME
-		'''last_expense_label=tk.Label(last_login_frame)
-		last_expenses_total=tk.Label(last_login_frame, text="Expenses in total : ")  #ADD METHOD TO GET TOTAL LAST EXPENSES
-		last_expenses_detailed_label=tk.Label(last_login_frame, text="Expenses in details..")'''
-	'''def expense_add(self, expense_value, expense_category, expense_description, expense_date):
-		if (len(expense_value)==0):
-			tk.messagebox.showerror("Error!", "Please fill in with an expense value first.")
-		else:
-			expense=Account_db(self.attr)
-			num=expense.total_number_expen()
-			expense.add_expense(expense_value, expense_category, expense_description, expense_date+str(num))
-
-			tk.messagebox.showinfo("Success!", "Expense added successfully with value of {}DT".format(expense_value))
-			print("expense added window")
-			#self.destroy()
-			#self.parent.switch_frame(Account, self.attr)'''

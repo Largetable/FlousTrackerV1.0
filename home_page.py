@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from db_check import Registering, Logging
 from account_page import Account
-
+import sqlite3
 
 green='#229954'
 blue='#2980b9'
@@ -19,14 +19,13 @@ class HomePage(tk.Frame):
 	def __init__(self, parent, attr=None):
 		tk.Frame.__init__(self, parent)
 		self.parent=parent
-
+		self.create_users()
 		#DECLARATION OF BOTH FRAMES FOR LOGIN AND REGISTRATION
 		register_frame = tk.Frame(self,  bg= '#f7f3aa' , width=450, height=500)
 		register_frame.grid(row=0, column=0)
 		login_frame = tk.Frame(self,  bg='#e9ff8f', width=450, height=500)
 		login_frame.grid(row=0, column=1)
 		#
-
 
 
 		#REGISTRATION PAGE 
@@ -38,7 +37,7 @@ class HomePage(tk.Frame):
 		username_label.config(font=("Courier", 15))
 		username_label.place(x=60, y=200)
 
-		username_get=ttk.Entry(register_frame)
+		username_get=ttk.Entry(register_frame, width=15)
 		self.username_get=username_get
 		username_get.place(x=250, y=205)
 		#password used in regisration 
@@ -46,7 +45,7 @@ class HomePage(tk.Frame):
 		password_label.config(font=("Courier", 15))
 		password_label.place(x=60, y=250)
 
-		password_get=ttk.Entry(register_frame)
+		password_get=ttk.Entry(register_frame, show="*", width=15)
 		self.password_get=password_get
 		password_get.place(x=250, y=255)
 
@@ -55,7 +54,7 @@ class HomePage(tk.Frame):
 		passconfirm_label.config(font=("Courier", 15))
 		passconfirm_label.place(x=60, y=300)
 
-		passconfirm_get=ttk.Entry(register_frame)
+		passconfirm_get=ttk.Entry(register_frame, show="*", width=15)
 		self.passconfirm_get=passconfirm_get
 		passconfirm_get.place(x=300, y=305)
 		#
@@ -75,7 +74,7 @@ class HomePage(tk.Frame):
 		userlogin_label.config(font=("Courier", 15))
 		userlogin_label.place(x=60, y=200)
 
-		userlogin_get=ttk.Entry(login_frame)
+		userlogin_get=ttk.Entry(login_frame, width=15)
 		self.userlogin_get=userlogin_get
 		userlogin_get.place(x=250, y=205)
 
@@ -85,7 +84,7 @@ class HomePage(tk.Frame):
 		passlog_label.config(font=("Courier", 15))
 		passlog_label.place(x=60, y=250)
 
-		passlog_get=ttk.Entry(login_frame)
+		passlog_get=ttk.Entry(login_frame, show="*", width=15)
 		self.passlog_get=passlog_get
 		passlog_get.place(x=250, y=255)
 		#
@@ -135,3 +134,20 @@ class HomePage(tk.Frame):
 					else: 
 						self.parent.switch_frame(Account, username)
 						messagebox.showinfo("Succes", "Login successful")
+
+	def create_users(self):
+		conn = sqlite3.connect('money_tracker.db')
+		print("Database opened successfully")
+		c=conn.cursor()
+		print("Attempting to create a database")
+		print("Attempting to create a users table")
+		c.execute('''CREATE TABLE IF NOT EXISTS users(
+			user_id TEXT PRIMARY KEY  ,
+			user_password TEXT NOT NULL ,
+			user_cash REAL ,
+			user_last_login_date TEXT NULL
+			);''')
+		print("Table created successfully")
+		conn.commit()
+		conn.close()
+		print("Database closed successfully")

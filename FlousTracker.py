@@ -12,7 +12,7 @@ red='#b03a2e'
 yellow='#f1c40f'
 orange='#dc7633'
 gray='#85929e'
-azra9_feta7='		'
+azra9_feta7='		'		
 LARGE_FONT = ("Verdana", 10)
 	
 class FlousTracker(tk.Tk):	
@@ -25,13 +25,15 @@ class FlousTracker(tk.Tk):
 	def switch_frame(self, frame_class, attr):
 		"""Destroys current frame and replaggggces it with a new one."""
 		new_frame = frame_class(self, attr)
-		if self._frame is not None and attr is not None:					
+		if self._frame is not None and attr is not None:						
 			self._frame.destroy()
 			self.attr=attr
 		self._frame = new_frame
 		#self._frame.configure(width=500, height=900)'#aaf7f7'
 		self._frame.pack(expand=True, fill=tk.BOTH)
-
+	#def get_username(self):
+	def get_username(self):
+		return 
 if __name__ == "__main__":	
 	app = FlousTracker()
 	app.mainloop()
