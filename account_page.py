@@ -16,13 +16,6 @@ class Account(tk.Frame):
 		session.create_users_expenses_table()
 		#session.create_session_table()
 
-		#print(session.get_last_categories_values())
-		########################
-
-		'''today=datetime.datetime.today().strftime('%d%m%y')
-		last_add_time=''
-		self.today=today
-		self.last_add_time=last_add_time'''
 		##################
 		frame1=tk.Frame(self, width=450, height=500, bg='#aaf7f7')
 		frame2=tk.Frame(self, width=450, height=500, bg='#aaf7f7')
@@ -30,7 +23,6 @@ class Account(tk.Frame):
 		self.grid_columnconfigure(1, weight=1)
 		frame1.grid(row=0, column=0, sticky=N+S+W+E)
 		frame2.grid(row=0, column=1, sticky=N+S+W+E)
-		ttk.Button(self, text="Quit", command = lambda : session.save_last_login_date()).place(x=380, y=460)
 		######################### FRAME 1
 
 		last_login_frame=tk.Frame(frame1, width=350, height=300,bg='white')
@@ -96,24 +88,29 @@ class Account(tk.Frame):
 		last_expense_label=tk.Label(last_login_frame, text="Informations about your last session!", font=("Courier",13))
 		last_expense_label.grid(row=0, column=0, sticky=E, padx=50, pady=20)
 		if (session.get_last_login_date() == 'NULL'):
-			tk.Label(last_login_frame, text= """There is currently no informations to display.. \n please fill in with data first 
+			tk.Label(last_login_frame, text= """There is currently no informations to display.. \n please fill in with data first \n
 				then re-login """, font=("Courier",13)).grid(row=1, sticky=S)
 
 		else:
 			print("INSIDE ELSE NOW")
 			categories_values=session.get_last_categories_values()
-			last_expenses_total=tk.Label(last_login_frame, text="Total expenses: 555", font=("Courier",12))  #ADD METHOD TO GET TOTAL LAST EXPENSES
-			last_expenses_total.grid(row=1, padx=30, pady=5 )
-			last_expenses_detailed_label=tk.Label(last_login_frame, text="Expenses in details..", font=("Courier",15))
-			last_expenses_detailed_label.grid(row=2, pady=5)
-			categories=list(categories_values.keys())
-			print("Categories = {}".format(categories))
-			values=list(categories_values.values())
-			print("values = {}".format(values))
-			for i in range(len(categories_values)):
-				tk.Label(last_login_frame, text=categories[i], font=("Courier",13)).grid(row=3+i, column=0, padx=30, pady=5, sticky=W, )
-				tk.Label(last_login_frame, text=values[i], font=("Courier",13)).grid(row=3+i, column=0, pady=5, padx=20)
-			last_login_frame.grid_columnconfigure(1, weight=2)
+			if (len(categories_values) == 0) :
+				tk.Label(last_login_frame, text="Total expenses: 0", font=("Courier",12)).grid(row=1, padx=30, pady=5)
+				tk.Label(last_login_frame, text="You didn't add any expense on your last login", font=("Courier",12)).grid(row=2, pady=5)
+			else:
+				categories=list(categories_values.keys())
+				values=list(categories_values.values())
+
+				last_expenses_total=tk.Label(last_login_frame, text="Total expenses: {}".format(sum([float(i) for i in values])), font=("Courier",12))  #ADD METHOD TO GET TOTAL LAST EXPENSES
+				last_expenses_total.grid(row=1, padx=30, pady=5 )
+				last_expenses_detailed_label=tk.Label(last_login_frame, text="Expenses in details..", font=("Courier",15))
+				last_expenses_detailed_label.grid(row=2, pady=5)
+				print("Categories = {}".format(categories))
+				print("values = {}".format(values))
+				for i in range(len(categories_values)):
+					tk.Label(last_login_frame, text=categories[i], font=("Courier",13)).grid(row=3+i, column=0, padx=30, pady=5, sticky=W, )
+					tk.Label(last_login_frame, text=values[i], font=("Courier",13)).grid(row=3+i, column=0, pady=5, padx=20)
+		ttk.Button(frame1, text="Quit", command = lambda : session.save_last_login_date()).pack()
 
 	def refresh_page(self):
 		self.destroy()

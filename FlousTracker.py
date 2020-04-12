@@ -31,9 +31,7 @@ class FlousTracker(tk.Tk):
 		self._frame = new_frame
 		#self._frame.configure(width=500, height=900)'#aaf7f7'
 		self._frame.pack(expand=True, fill=tk.BOTH)
-	#def get_username(self):
-	def get_username(self):
-		return 
+
 if __name__ == "__main__":	
 	app = FlousTracker()
 	app.mainloop()
